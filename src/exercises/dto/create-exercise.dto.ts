@@ -1,5 +1,10 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
+enum Difficulty {
+  beginner = 'Beginner',
+  intermediate = 'Intermediate',
+  advanced = 'Advanced',
+}
 export class CreateExerciseDto {
   @IsString()
   @IsNotEmpty()
@@ -9,7 +14,7 @@ export class CreateExerciseDto {
   @IsNotEmpty()
   description: string;
 
-  @IsString()
+  @IsEnum(Difficulty)
   @IsNotEmpty()
   difficulty: string;
 }
