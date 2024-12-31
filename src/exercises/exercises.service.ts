@@ -1,51 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { ConfigService } from '@nestjs/config';
+import { SupabaseService } from 'src/supabase/supabase.service';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class ExercisesService {
+  private supabaseClient: SupabaseClient;
+
+  constructor(
+    private configService: ConfigService,
+    private supabaseServie: SupabaseService,
+  ) {
+    this.supabaseClient = this.supabaseServie.getSupabase();
+  }
+
   create(createExerciseDto: CreateExerciseDto) {
     return 'This action adds a new exercise';
   }
 
-  findAll() {
-    return [
-      {
-        id: 1,
-        name: 'Pushups',
-        description:
-          'Pushups are a common exercise for strengthening the core and upper body.',
-        difficulty: 'Intermediate',
-      },
-      {
-        id: 2,
-        name: 'Squats',
-        description:
-          'Squats are a common exercise for strengthening the lower body and core.',
-        difficulty: 'Beginner',
-      },
-      {
-        id: 3,
-        name: 'Planks',
-        description:
-          'Planks are a common exercise for strengthening the core and upper body.',
-        difficulty: 'Intermediate',
-      },
-      {
-        id: 4,
-        name: 'Lunges',
-        description:
-          'Lunges are a common exercise for strengthening the lower body and core.',
-        difficulty: 'Beginner',
-      },
-      {
-        id: 5,
-        name: 'Burpees',
-        description:
-          'Burpees are a common exercise for strengthening the core and upper body.',
-        difficulty: 'Advanced',
-      },
-    ];
+  async findAll() {
+    const { data, error } = await this.supabaseClient
+      .from('exercises')
+      .select('*');
+
+    if (error) throw new Error(error.message);
+
+    return data;
   }
 
   findOne(id: number) {
